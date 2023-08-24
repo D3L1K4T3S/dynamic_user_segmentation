@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := build
 
 BUILD_DIR := ./cmd/app/build/
-PROJECT := .
+PROJECT := ./cmd/app
 
 .PHONY:fmt
 fmt:
@@ -17,7 +17,7 @@ lint: fmt
 
 .PHONY:build
 build: vet
-	go build $(PROJECT)/... -o $(BUILD_DIR)
+	go build -o $(BUILD_DIR) $(PROJECT)/...
 
 .PHONY:run
 run: vet
