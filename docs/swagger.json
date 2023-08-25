@@ -1,0 +1,15 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Dynamic User Segmentation Swagger API",
+        "contact": {
+            "name": "Egor Zhelagin",
+            "email": "zhelagin.egor@yandex.ru"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "0.0.1"
+    },
+    "paths": {}
+}
