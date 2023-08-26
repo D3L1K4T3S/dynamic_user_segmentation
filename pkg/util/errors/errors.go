@@ -1,4 +1,4 @@
-package erros
+package errors
 
 import "fmt"
 
