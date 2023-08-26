@@ -63,13 +63,13 @@ func NewClient(url string, options ...Option) (*PostgreSQL, error) {
 
 	for pg.connAttempts > 0 {
 		pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
-		if err != nil {
-			return nil, err
+		if err == nil {
+			break
 		}
 
 		log.Printf("Trying to connect, attempts left: %d", pg.connAttempts)
 		time.Sleep(pg.connTimeout)
-		pg.connTimeout--
+		pg.connAttempts--
 	}
 
 	if err != nil {
