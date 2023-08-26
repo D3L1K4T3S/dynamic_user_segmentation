@@ -1,4 +1,4 @@
-package db
+package postgresql
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	e "dynamic-user-segmentation/pkg/util/erros"
+	e "dynamic-user-segmentation/pkg/util/errors"
 )
 
 const (
