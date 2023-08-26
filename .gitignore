@@ -1,3 +1,4 @@
 cmd/app/build/
 .idea
 TODO.md
+.DS_Store
