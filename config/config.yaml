@@ -1,0 +1,3 @@
+env: "local"
+storage:
+  max_pool_size: 20
