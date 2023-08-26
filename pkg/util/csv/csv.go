@@ -1,7 +1,7 @@
 package csv
 
 import (
-	e "dynamic-user-segmentation/pkg/util/erros"
+	e "dynamic-user-segmentation/pkg/util/errors"
 	"encoding/csv"
 	"os"
 	"path/filepath"
