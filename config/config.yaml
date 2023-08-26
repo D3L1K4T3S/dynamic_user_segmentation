@@ -1,3 +1,19 @@
-env: "local"
+app:
+  name: 'dynamic-user-segmentation'
+  version: '0.2.0'
+  env: "local"
+
+http:
+  host: localhost
+  port: 8080
+
+log:
+  level: 'debug'
+
 storage:
   max_pool_size: 20
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  database: postgres
