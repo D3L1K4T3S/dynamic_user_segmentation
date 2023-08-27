@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"dynamic-user-segmentation/config"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	"dynamic-user-segmentation/pkg/logger/sloglogger"
@@ -33,7 +32,7 @@ func main() {
 	logger := sloglogger.NewLogger(sloglogger.SetLevel(cfg.Log.Level))
 
 	logger.Info("Initializing client postgreSQl")
-	pg, err := postgresql.NewClient(config.PgUrl(
+	_, err := postgresql.NewClient(config.PgUrl(
 		cfg.Storage.User,
 		cfg.Storage.Password,
 		cfg.Storage.Host,
@@ -46,16 +45,4 @@ func main() {
 	}
 
 	logger.Info("Initializing repositories")
-
-	_, err = pg.Pool.Exec(context.Background(), "INSERT INTO test(name) VALUES ($1)", "")
-	if err != nil {
-		logger.Error(err.Error())
-	}
-
-	var name string
-	err = pg.Pool.QueryRow(context.Background(), "SELECT name FROM test WHERE ID = $1", 3).Scan(&name)
-	if err != nil {
-		logger.Error(err.Error())
-	}
-	logger.Info("Name from table: ", name)
 }
