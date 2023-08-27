@@ -42,7 +42,7 @@ type Segments interface {
 }
 
 type Users interface {
-	CreateUser(ctx context.Context, username string, password string) (int, error)
+	CreateUser(ctx context.Context, user entity.Users) (int, error)
 	GetUserByID(ctx context.Context, id int) (entity.Users, error)
 	GetUserByUsername(ctx context.Context, username string) (entity.Users, error)
 	GetIdByUsername(ctx context.Context, username string) (int, error)

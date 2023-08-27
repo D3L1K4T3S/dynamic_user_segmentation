@@ -19,7 +19,7 @@ func NewUsersRepository(pg *postgresql.PostgreSQL) *UsersRepository {
 	return &UsersRepository{pg}
 }
 
-func (ur *UsersRepository) CreateUser(ctx context.Context, username string, password string) (int, error) {
+func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem in create user: ", err)
@@ -28,7 +28,7 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, username string, pass
 	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
 
 	var id int
-	err = ur.Pool.QueryRow(ctx, query, username, password).Scan(&id)
+	err = ur.Pool.QueryRow(ctx, query, user.Username, user.Password).Scan(&id)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if ok := errors.As(err, &pgErr); ok {
