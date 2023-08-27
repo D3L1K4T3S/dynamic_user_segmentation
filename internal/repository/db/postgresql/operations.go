@@ -34,7 +34,7 @@ func (or *OperationsRepository) GetOperationsInTime(ctx context.Context, start, 
 	var operations []entity.Operations
 	for rows.Next() {
 		var operation entity.Operations
-		err = rows.Scan(&operation.Id, &operation.UserId,
+		err = rows.Scan(&operation.Id, &operation.ConsumerId,
 			&operation.SegmentId, &operation.ActionId, &operation.Created)
 		if err != nil {
 			return nil, e.Wrap("can't scan in struct data: ", err)
