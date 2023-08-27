@@ -57,7 +57,6 @@ func (ar *ActionsRepository) DeleteAction(ctx context.Context, action string) er
 	}
 	return nil
 }
-
 func (ar *ActionsRepository) GetActionById(ctx context.Context, id int) (entity.Action, error) {
 	var err error
 	defer func() {
