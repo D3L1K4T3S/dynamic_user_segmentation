@@ -7,15 +7,22 @@ import (
 	"time"
 )
 
-type UsersSegmentsRepository struct {
+type ConsumersSegmentsRepository struct {
 	*postgresql.PostgreSQL
 }
 
-func NewUsersSegmentsRepository(pg *postgresql.PostgreSQL) *UsersSegmentsRepository {
-	return &UsersSegmentsRepository{pg}
+func NewConsumersSegmentsRepository(pg *postgresql.PostgreSQL) *ConsumersSegmentsRepository {
+	return &ConsumersSegmentsRepository{pg}
 }
 
-func (usr *UsersSegmentsRepository) UpdateSegmentTTL(ctx context.Context, segmentID int, TTL time.Time) error {
+func (usr *ConsumersSegmentsRepository) AddConsumerSegment(ctx context.Context, segmentId int, TTL time.Time) (int, error) {
+
+}
+func (usr *ConsumersSegmentsRepository) DeleteConsumerSegment(ctx context.Context, segmentId int) error {
+
+}
+
+func (usr *ConsumersSegmentsRepository) UpdateSegmentTTL(ctx context.Context, segmentID int, TTL time.Time) error {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("can't update ttl in segment: ", err)

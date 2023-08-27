@@ -19,7 +19,7 @@ func NewActionsRepository(pg *postgresql.PostgreSQL) *ActionsRepository {
 	return &ActionsRepository{pg}
 }
 
-func (ar *ActionsRepository) AddAction(ctx context.Context, action entity.Action) (int, error) {
+func (ar *ActionsRepository) CreateAction(ctx context.Context, action entity.Action) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem with add action: ", err)
