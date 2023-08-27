@@ -9,6 +9,8 @@ import (
 )
 
 type Actions interface {
+	AddAction(ctx context.Context, action entity.Action) (int, error)
+	DeleteAction(ctx context.Context, action string) error
 	GetActionById(ctx context.Context, id int) (entity.Action, error)
 	GetIdByAction(ctx context.Context, action entity.Action) (int, error)
 }
