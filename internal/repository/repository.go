@@ -9,10 +9,24 @@ import (
 )
 
 type Actions interface {
-	AddAction(ctx context.Context, action entity.Action) (int, error)
+	CreateAction(ctx context.Context, action entity.Action) (int, error)
 	DeleteAction(ctx context.Context, action string) error
-	GetActionById(ctx context.Context, id int) (entity.Action, error)
+	GetActionById(ctx context.Context, actionId int) (entity.Action, error)
 	GetIdByAction(ctx context.Context, action entity.Action) (int, error)
+}
+
+type Consumers interface {
+	CreateConsumer(ctx context.Context, consumerId int) (int, error)
+	DeleteConsumer(ctx context.Context, consumerId int) error
+	AddSegmentToConsumer(ctx context.Context, id int, segmentId int) error
+	GetSegmentsById(ctx context.Context, consumerId int) ([]int, error)
+	DeleteSegmentFromConsumer(ctx context.Context, id int, segmentId int) error
+}
+
+type ConsumersSegments interface {
+	AddConsumerSegment(ctx context.Context, segmentId int, TTL time.Time) (int, error)
+	DeleteConsumerSegment(ctx context.Context, segmentId int) error
+	UpdateSegmentTTL(ctx context.Context, segmentId int, TTL time.Time) error
 }
 
 type Operations interface {
@@ -28,29 +42,28 @@ type Segments interface {
 }
 
 type Users interface {
-	CreateUser(ctx context.Context, userId int) (int, error)
-	AddSegmentToUser(ctx context.Context, userId int, segments ...entity.Segments) (bool, error)
-	DeleteSegmentFromUser(ctx context.Context, userId int, segments ...entity.Segments) (bool, error)
-}
-
-type UsersSegments interface {
-	UpdateSegmentTTL(ctx context.Context, segmentID int, TTL time.Time) error
+	CreateUser(ctx context.Context, username string, password string) (int, error)
+	GetUserByID(ctx context.Context, id int) (entity.Users, error)
+	GetUserByUsername(ctx context.Context, username string) (entity.Users, error)
+	GetIdByUsername(ctx context.Context, username string) (int, error)
 }
 
 type Repositories struct {
 	Actions
+	Consumers
+	ConsumersSegments
 	Operations
 	Segments
 	Users
-	UsersSegments
 }
 
 func NewRepositories(pg *postgresql.PostgreSQL) *Repositories {
 	return &Repositories{
-		Actions:       postgres.NewActionsRepository(pg),
-		Operations:    postgres.NewOperationsRepository(pg),
-		Segments:      postgres.NewSegmentsRepository(pg),
-		Users:         postgres.NewUsersRepository(pg),
-		UsersSegments: postgres.NewUsersSegmentsRepository(pg),
+		Actions:           postgres.NewActionsRepository(pg),
+		Consumers:         postgres.NewConsumersRepository(pg),
+		ConsumersSegments: postgres.NewConsumersSegmentsRepository(pg),
+		Operations:        postgres.NewOperationsRepository(pg),
+		Segments:          postgres.NewSegmentsRepository(pg),
+		Users:             postgres.NewUsersRepository(pg),
 	}
 }

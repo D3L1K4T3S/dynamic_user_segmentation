@@ -2,8 +2,12 @@ package postgresql
 
 import (
 	"context"
-	"dynamic-user-segmentation/internal/entity"
+	"dynamic-user-segmentation/internal/repository"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
+	e "dynamic-user-segmentation/pkg/util/errors"
+	"errors"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type ConsumersRepository struct {
@@ -14,15 +18,98 @@ func NewConsumersRepository(pg *postgresql.PostgreSQL) *ConsumersRepository {
 	return &ConsumersRepository{pg}
 }
 
-func (cr *ConsumersRepository) CreateConsumer(ctx context.Context, id int, segments ...entity.Segments) (int, error) {
+func (cr *ConsumersRepository) CreateConsumer(ctx context.Context, consumerId int) (int, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("problem with create a consumer: ", err)
+	}()
 
-}
-func (cr *ConsumersRepository) DeleteConsumer(ctx context.Context, id int) error {
+	query := "INSERT INTO consumers(consumer_id) VALUES ($1) RETURNING id"
 
-}
-func (cr *ConsumersRepository) AddSegmentToConsumer(ctx context.Context, id int, segments ...entity.Segments) (bool, error) {
+	var id int
+	err = cr.Pool.QueryRow(ctx, query, consumerId).Scan(&id)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if ok := errors.As(err, &pgErr); ok {
+			if pgErr.Code == "23505" {
+				return 0, repository.ErrAlreadyExists
+			}
+		}
+		return 0, e.Wrap("can't do a query: ", err)
+	}
 
+	return id, nil
 }
-func (cr *ConsumersRepository) DeleteSegmentFromConsumer(ctx context.Context, id int, segments ...entity.Segments) (bool, error) {
-	
+func (cr *ConsumersRepository) DeleteConsumer(ctx context.Context, consumerId int) error {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("problem with delete a consumer", err)
+	}()
+
+	query := "DELETE FROM consumers WHERE consumer_id = $1"
+
+	_, err = cr.Pool.Exec(ctx, query, consumerId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return e.Wrap("can't do a query: ", err)
+	}
+	return nil
+}
+func (cr *ConsumersRepository) GetSegmentsById(ctx context.Context, consumerId int) ([]int, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("problem with get segments consumer: ", err)
+	}()
+
+	query := "SELECT segment_id FROM consumers WHERE consumer_id = $1"
+
+	rows, err := cr.Pool.Query(ctx, query, consumerId)
+	if err != nil {
+		return nil, e.Wrap("can't do a query: ", err)
+	}
+
+	defer rows.Close()
+
+	segmentsId := make([]int, 0)
+	for rows.Next() {
+		var segmentId int
+		err = rows.Scan(&segmentId)
+		if err != nil {
+			return nil, e.Wrap("can't scan a values from rows: ", err)
+		}
+		segmentsId = append(segmentsId, segmentId)
+	}
+	return segmentsId, nil
+}
+func (cr *ConsumersRepository) AddSegmentToConsumer(ctx context.Context, id int, segmentId int) error {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("problem with add segment to consumer: ", err)
+	}()
+
+	query := "INSERT INTO consumers (consumer_id, segment_id) VALUES ($1,$2)"
+	_, err = cr.Pool.Exec(ctx, query, id, segmentId)
+	if err != nil {
+		return e.Wrap("can't do a query: ", err)
+	}
+
+	return nil
+}
+func (cr *ConsumersRepository) DeleteSegmentFromConsumer(ctx context.Context, id int, segmentId int) error {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("problem with delete segment from consumer: ", err)
+	}()
+
+	query := "DELETE FROM consumers WHERE consumer_id = $1 and segment_id = $2"
+	_, err = cr.Pool.Exec(ctx, query, id, segmentId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return e.Wrap("can't do a query: ", err)
+	}
+	return nil
 }
