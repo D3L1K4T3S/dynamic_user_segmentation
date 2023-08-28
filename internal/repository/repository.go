@@ -9,10 +9,10 @@ import (
 )
 
 type Actions interface {
-	CreateAction(ctx context.Context, action entity.Action) (int, error)
+	CreateAction(ctx context.Context, action string) (int, error)
 	DeleteAction(ctx context.Context, action string) error
-	GetActionById(ctx context.Context, actionId int) (entity.Action, error)
-	GetIdByAction(ctx context.Context, action entity.Action) (int, error)
+	GetActionById(ctx context.Context, actionId int) (entity.Actions, error)
+	GetIdByAction(ctx context.Context, action string) (int, error)
 }
 
 type Consumers interface {
@@ -43,6 +43,7 @@ type Segments interface {
 
 type Users interface {
 	CreateUser(ctx context.Context, user entity.Users) (int, error)
+	DeleteUser(ctx context.Context, user entity.Users) error
 	GetUserByID(ctx context.Context, id int) (entity.Users, error)
 	GetUserByUsername(ctx context.Context, username string) (entity.Users, error)
 	GetIdByUsername(ctx context.Context, username string) (int, error)

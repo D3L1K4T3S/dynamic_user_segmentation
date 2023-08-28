@@ -19,7 +19,7 @@ func NewActionsRepository(pg *postgresql.PostgreSQL) *ActionsRepository {
 	return &ActionsRepository{pg}
 }
 
-func (ar *ActionsRepository) CreateAction(ctx context.Context, action entity.Action) (int, error) {
+func (ar *ActionsRepository) CreateAction(ctx context.Context, action string) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem with add action: ", err)
@@ -57,7 +57,7 @@ func (ar *ActionsRepository) DeleteAction(ctx context.Context, action string) er
 	}
 	return nil
 }
-func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (entity.Action, error) {
+func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (entity.Actions, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem with get action by id: ", err)
@@ -65,18 +65,18 @@ func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (e
 
 	query := "SELECT name FROM actions WHERE id = $1"
 
-	var action entity.Action
-	err = ar.Pool.QueryRow(ctx, query, actionId).Scan(&action)
+	var action entity.Actions
+	err = ar.Pool.QueryRow(ctx, query, actionId).Scan(&action.Name)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", repository.ErrNotFound
+			return entity.Actions{}, repository.ErrNotFound
 		}
-		return "", err
+		return entity.Actions{}, err
 	}
-
+	action.Id = actionId
 	return action, nil
 }
-func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action entity.Action) (int, error) {
+func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action string) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem in GetIdByAction: ", err)

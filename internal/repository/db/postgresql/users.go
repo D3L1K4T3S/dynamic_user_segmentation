@@ -23,6 +23,7 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (i
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem in create user: ", err)
+
 	}()
 
 	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
@@ -40,6 +41,24 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (i
 	}
 
 	return id, nil
+}
+func (ur *UsersRepository) DeleteUser(ctx context.Context, user entity.Users) error {
+	var err error
+	defer func() {
+
+	}()
+
+	query := "DELETE FROM users WHERE username = $1 and password = $2"
+
+	_, err = ur.Pool.Exec(ctx, query, user.Username, user.Password)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return e.Wrap("can't do a query: ", err)
+	}
+	return nil
+
 }
 func (ur *UsersRepository) GetUserByID(ctx context.Context, id int) (entity.Users, error) {
 	var err error
