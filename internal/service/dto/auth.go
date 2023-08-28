@@ -1,4 +1,4 @@
-package dbo
+package dto
 
 type AuthUser struct {
 	Username string

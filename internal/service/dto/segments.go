@@ -1,4 +1,4 @@
-package dbo
+package dto
 
 type SegmentsRequest struct {
 	Name    string

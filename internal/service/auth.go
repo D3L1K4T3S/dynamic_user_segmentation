@@ -4,7 +4,7 @@ import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
 	"dynamic-user-segmentation/internal/repository"
-	"dynamic-user-segmentation/internal/service/dbo"
+	"dynamic-user-segmentation/internal/service/dto"
 	"dynamic-user-segmentation/pkg/hash"
 	e "dynamic-user-segmentation/pkg/util/errors"
 	"errors"
@@ -34,7 +34,7 @@ func NewAuthService(usersRepository repository.Users, ph hash.PasswordHash, sign
 	}
 }
 
-func (as *AuthService) CreateUser(ctx context.Context, authUser dbo.AuthUser) (int, error) {
+func (as *AuthService) CreateUser(ctx context.Context, authUser dto.AuthUser) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("AuthService: ", err)
@@ -54,7 +54,7 @@ func (as *AuthService) CreateUser(ctx context.Context, authUser dbo.AuthUser) (i
 	}
 	return userId, nil
 }
-func (as *AuthService) DeleteUser(ctx context.Context, authUser dbo.AuthUser) error {
+func (as *AuthService) DeleteUser(ctx context.Context, authUser dto.AuthUser) error {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("AuthService: ", err)
@@ -74,7 +74,7 @@ func (as *AuthService) DeleteUser(ctx context.Context, authUser dbo.AuthUser) er
 	}
 	return nil
 }
-func (as *AuthService) GenerateToken(ctx context.Context, authUser dbo.AuthUser) (string, error) {
+func (as *AuthService) GenerateToken(ctx context.Context, authUser dto.AuthUser) (string, error) {
 	user, err := as.usersRepository.GetUserByUsername(ctx, authUser.Username)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
