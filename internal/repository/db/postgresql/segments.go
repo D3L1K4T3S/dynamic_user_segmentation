@@ -18,7 +18,7 @@ func NewSegmentsRepository(pg *postgresql.PostgreSQL) *SegmentsRepository {
 	return &SegmentsRepository{pg}
 }
 
-func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string, percent int) (int, error) {
+func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string, percent float64) (int, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("can't create a new segment", err)
@@ -56,7 +56,7 @@ func (sr *SegmentsRepository) DeleteSegment(ctx context.Context, id int) error {
 	}
 	return nil
 }
-func (sr *SegmentsRepository) UpdateSegment(ctx context.Context, id int, percent int) error {
+func (sr *SegmentsRepository) UpdateSegment(ctx context.Context, id int, percent float64) error {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("can't update segment: ", err)

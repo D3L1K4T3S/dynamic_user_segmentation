@@ -34,9 +34,9 @@ type Operations interface {
 }
 
 type Segments interface {
-	CreateSegment(ctx context.Context, segment string, percent int) (int, error)
+	CreateSegment(ctx context.Context, segment string, percent float64) (int, error)
 	DeleteSegment(ctx context.Context, id int) error
-	UpdateSegment(ctx context.Context, id int, percent int) error
+	UpdateSegment(ctx context.Context, id int, percent float64) error
 	GetSegmentById(ctx context.Context, id int) (string, error)
 	GetIdBySegment(ctx context.Context, segment string) (int, error)
 }
