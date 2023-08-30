@@ -1,10 +1,5 @@
 package dto
 
 type ActionsRequest struct {
-	Name string
+	Name string `json:"name"`
 }
-
-//type ActionsResponse struct {
-//	Id   int
-//	Name string
-//}

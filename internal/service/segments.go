@@ -37,3 +37,19 @@ func (ss *SegmentsService) UpdateSegment(ctx context.Context, segment dto.Segmen
 	}
 	return ss.segments.UpdateSegment(ctx, id, segment.Percent)
 }
+func (ss *SegmentsService) GetAllSegments(ctx context.Context) ([]dto.SegmentsResponse, error) {
+	res, err := ss.segments.GetAllSegments(ctx)
+	if err != nil {
+		return nil, e.Wrap("can't get all segments: ", err)
+	}
+
+	segments := make([]dto.SegmentsResponse, 0)
+	for _, value := range res {
+		var segment dto.SegmentsResponse
+		segment.Id = value.Id
+		segment.Name = value.Name
+		segment.Percent = value.Percent
+		segments = append(segments, segment)
+	}
+	return segments, nil
+}
