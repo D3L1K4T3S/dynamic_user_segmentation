@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	defaultAddress         = "localhost:80"
+	defaultAddress         = "localhost:8080"
 	defaultWriteTimeout    = 10 * time.Second
 	defaultReadTimeout     = 10 * time.Second
 	defaultShutdownTimeout = 10 * time.Second
