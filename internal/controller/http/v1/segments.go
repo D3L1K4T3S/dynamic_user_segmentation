@@ -4,7 +4,7 @@ import (
 	"dynamic-user-segmentation/internal/service"
 	"dynamic-user-segmentation/internal/service/dto"
 	"errors"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
@@ -22,34 +22,25 @@ func newSegmentRoutes(group *echo.Group, segmentsService service.Segments) {
 	group.DELETE("/delete", routes.delete)
 }
 
-type segmentInput struct {
-	Name    string
-	Percent float64
-}
-
-type segmentDelete struct {
-	Name string
-}
-
 // @Description Create segment
+// @Tags segments
 // @Accept json
 // @Produce json
+// @Param input body dto.SegmentsRequest true "input"
 // @Success 201
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /api/v1/segments/create [post]
 func (sr *segmentsRoutes) create(ctx echo.Context) error {
-	var input segmentInput
+	var input dto.SegmentsRequest
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	id, err := sr.segmentService.CreateSegment(ctx.Request().Context(), dto.SegmentsRequest{
-		Name:    input.Name,
-		Percent: input.Percent,
-	})
+	id, err := sr.segmentService.CreateSegment(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrSegmentAlreadyExists) {
@@ -66,24 +57,24 @@ func (sr *segmentsRoutes) create(ctx echo.Context) error {
 }
 
 // @Description Update percent in segment
+// @Tags segments
 // @Accept json
 // @Produce json
+// @Param input body dto.SegmentsRequest true "input"
 // @Success 200
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /api/v1/segments/update [patch]
 func (sr *segmentsRoutes) update(ctx echo.Context) error {
-	var input segmentInput
+	var input dto.SegmentsRequest
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	err := sr.segmentService.UpdateSegment(ctx.Request().Context(), dto.SegmentsRequest{
-		Name:    input.Name,
-		Percent: input.Percent,
-	})
+	err := sr.segmentService.UpdateSegment(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrSegmentAlreadyExists) {
@@ -100,23 +91,24 @@ func (sr *segmentsRoutes) update(ctx echo.Context) error {
 }
 
 // @Description Delete segment
+// @Tags segments
 // @Accept json
 // @Produce json
+// @Param input body dto.SegmentsRequest true "input"
 // @Success 200
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /api/v1/segments/delete [delete]
 func (sr *segmentsRoutes) delete(ctx echo.Context) error {
-	var input segmentDelete
+	var input dto.SegmentsRequest
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	err := sr.segmentService.DeleteSegment(ctx.Request().Context(), dto.SegmentsRequest{
-		Name: input.Name,
-	})
+	err := sr.segmentService.DeleteSegment(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrSegmentAlreadyExists) {

@@ -4,7 +4,7 @@ import (
 	"dynamic-user-segmentation/internal/service"
 	"dynamic-user-segmentation/internal/service/dto"
 	"errors"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
@@ -26,23 +26,24 @@ type actionInput struct {
 }
 
 // @Description Create action
+// @Tags actions
 // @Accept json
 // @Produce json
+// @Param input body dto.ActionsRequest true "input"
 // @Success 201
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /api/v1/actions/create [post]
 func (ar *actionsRoutes) create(ctx echo.Context) error {
-	var input actionInput
+	var input dto.ActionsRequest
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	id, err := ar.actionsService.CreateAction(ctx.Request().Context(), dto.ActionsRequest{
-		Name: input.Name,
-	})
+	id, err := ar.actionsService.CreateAction(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrActionAlreadyExists) {
@@ -52,29 +53,30 @@ func (ar *actionsRoutes) create(ctx echo.Context) error {
 		ErrResponse(ctx, http.StatusInternalServerError, ErrInternalServer.Error())
 		return err
 	}
-	return ctx.JSON(http.StatusOK, struct {
+	return ctx.JSON(http.StatusCreated, struct {
 		Id int `json:"id"`
 	}{id})
 }
 
 // @Description Delete action
+// @Tags actions
 // @Accept json
 // @Produce json
+// @Param input body dto.ActionsRequest true "input"
 // @Success 200
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /api/v1/actions/delete [delete]
 func (ar *actionsRoutes) delete(ctx echo.Context) error {
-	var input actionInput
+	var input dto.ActionsRequest
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	err := ar.actionsService.DeleteAction(ctx.Request().Context(), dto.ActionsRequest{
-		Name: input.Name,
-	})
+	err := ar.actionsService.DeleteAction(ctx.Request().Context(), input)
 	if err != nil {
 		if errors.Is(err, service.ErrActionNotFound) {
 			ErrResponse(ctx, http.StatusBadRequest, service.ErrUserNotFound.Error())

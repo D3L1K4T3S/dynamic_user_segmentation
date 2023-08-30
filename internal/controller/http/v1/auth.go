@@ -4,19 +4,9 @@ import (
 	"dynamic-user-segmentation/internal/service"
 	"dynamic-user-segmentation/internal/service/dto"
 	"errors"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
-
-type signIn struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type signUp struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
 
 type authRoutes struct {
 	authService service.Auth
@@ -32,24 +22,24 @@ func newAuthRoutes(group *echo.Group, authService service.Auth) {
 }
 
 // @Description Sing In for users
+// @Tags auth
 // @Accept json
 // @Produce json
+// @Param input body dto.AuthUser true "input"
 // @Success 200
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /auth/sign-in [post]
 func (ar *authRoutes) signIn(ctx echo.Context) error {
-	var input signIn
+	var input dto.AuthUser
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	token, err := ar.authService.GenerateToken(ctx.Request().Context(), dto.AuthUser{
-		Username: input.Username,
-		Password: input.Password,
-	})
+	token, err := ar.authService.GenerateToken(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrUserNotFound) {
@@ -66,24 +56,24 @@ func (ar *authRoutes) signIn(ctx echo.Context) error {
 }
 
 // @Description Sing Up for users
+// @Tags auth
 // @Accept json
 // @Produce json
+// @Param input body dto.AuthUser true "input"
 // @Success 201
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Security JWT
 // @Router /auth/sign-up [post]
 func (ar *authRoutes) signUp(ctx echo.Context) error {
-	var input signUp
+	var input dto.AuthUser
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())
 		return err
 	}
 
-	id, err := ar.authService.CreateUser(ctx.Request().Context(), dto.AuthUser{
-		Username: input.Username,
-		Password: input.Password,
-	})
+	id, err := ar.authService.CreateUser(ctx.Request().Context(), input)
 
 	if err != nil {
 		if errors.Is(err, service.ErrUserAlreadyExists) {
