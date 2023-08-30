@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"path"
+	"time"
 )
-
-//PG_URL=postgres://{user}:{password}@{host}:{port}/{database}
 
 type (
 	Config struct {
@@ -14,6 +13,8 @@ type (
 		HTTP    `yaml:"http"`
 		Log     `yaml:"log"`
 		Storage `yaml:"storage"`
+		JWT     `yaml:"jwt"`
+		Hash    `yaml:"hash"`
 	}
 
 	HTTP struct {
@@ -38,6 +39,15 @@ type (
 		User        string `yaml:"user"`
 		Password    string `yaml:"password"`
 		Database    string `yaml:"database"`
+	}
+
+	JWT struct {
+		SignKey  string        `yaml:"sign_key"`
+		TokenTTL time.Duration `yaml:"token_ttl"`
+	}
+
+	Hash struct {
+		Salt string `yaml:"salt"`
 	}
 )
 
