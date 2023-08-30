@@ -13,10 +13,10 @@ CREATE TABLE SEGMENTS (
 );
 
 DROP TABLE IF EXISTS CONSUMERS_SEGMENTS;
-CREATE TABLE CONSUMERS_SEGMENTS (
+CREATE TABLE test (
     id SERIAL PRIMARY KEY,
     segment_id INT NOT NULL ,
-    ttl TIMESTAMP NOT NULL DEFAULT NOW(),
+    ttl TIMESTAMP,
     FOREIGN KEY (segment_id) REFERENCES SEGMENTS(id)
 );
 
@@ -41,6 +41,19 @@ CREATE TABLE OPERATIONS (
     segment_id INT NOT NULL,
     action_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (segment_id) REFERENCES SEGMENTS(id),
-    FOREIGN KEY (action_id) REFERENCES ACTIONS(id)
+    FOREIGN KEY (segment_id) REFERENCES SEGMENTS(id) ON DELETE CASCADE,
+    FOREIGN KEY (action_id) REFERENCES ACTIONS(id) ON DELETE CASCADE
 );
+
+CREATE FUNCTION delete_expired_ttl(c_id int) RETURNS void LANGUAGE plpgsql as
+    $$
+    begin
+        DELETE FROM consumers_segments USING consumers
+        WHERE consumers_segments.id = consumers.segment_id
+        AND consumers.consumer_id = c_id
+        AND consumers_segments.ttl IS NOT NULL
+        AND consumers_segments.ttl < NOW();
+    end
+    $$
+;
+
