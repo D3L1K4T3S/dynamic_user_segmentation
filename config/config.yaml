@@ -1,7 +1,7 @@
 app:
   name: 'dynamic-user-segmentation'
   version: '0.2.0'
-  env: "local"
+  env: 'local'
 
 http:
   host: localhost
@@ -16,4 +16,11 @@ storage:
   port: 5432
   user: postgres
   password: BenQuB43
-  database: postgres
+  database: postgres1
+
+jwt:
+  signKey: 'key'
+  token_ttl: 120m
+
+hash:
+  salt: 'salt'

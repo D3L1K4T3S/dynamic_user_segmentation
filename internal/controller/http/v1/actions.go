@@ -31,8 +31,8 @@ type actionInput struct {
 // @Produce json
 // @Param input body dto.ActionsRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/actions/create [post]
 func (ar *actionsRoutes) create(ctx echo.Context) error {
@@ -64,8 +64,8 @@ func (ar *actionsRoutes) create(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.ActionsRequest true "input"
 // @Success 200
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/actions/delete [delete]
 func (ar *actionsRoutes) delete(ctx echo.Context) error {

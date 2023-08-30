@@ -4,6 +4,7 @@ import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
 	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/internal/service/dto"
 	"dynamic-user-segmentation/pkg/hash"
 	e "dynamic-user-segmentation/pkg/util/errors"
@@ -47,8 +48,8 @@ func (as *AuthService) CreateUser(ctx context.Context, authUser dto.AuthUser) (i
 
 	userId, err := as.usersRepository.CreateUser(ctx, user)
 	if err != nil {
-		if errors.Is(err, repository.ErrAlreadyExists) {
-			return 0, repository.ErrAlreadyExists
+		if errors.Is(err, respository_errors.ErrAlreadyExists) {
+			return 0, respository_errors.ErrAlreadyExists
 		}
 		return 0, e.Wrap("can't create user: ", err)
 	}
@@ -67,8 +68,8 @@ func (as *AuthService) DeleteUser(ctx context.Context, authUser dto.AuthUser) er
 
 	err = as.usersRepository.DeleteUser(ctx, user)
 	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return repository.ErrNotFound
+		if errors.Is(err, respository_errors.ErrNotFound) {
+			return respository_errors.ErrNotFound
 		}
 		return e.Wrap("can't delete user: ", err)
 	}
@@ -77,8 +78,8 @@ func (as *AuthService) DeleteUser(ctx context.Context, authUser dto.AuthUser) er
 func (as *AuthService) GenerateToken(ctx context.Context, authUser dto.AuthUser) (string, error) {
 	user, err := as.usersRepository.GetUserByUsername(ctx, authUser.Username)
 	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return "", repository.ErrNotFound
+		if errors.Is(err, respository_errors.ErrNotFound) {
+			return "", respository_errors.ErrNotFound
 		}
 		return "", e.Wrap("can't get user: ", err)
 	}

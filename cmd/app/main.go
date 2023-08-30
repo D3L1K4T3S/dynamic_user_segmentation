@@ -3,7 +3,7 @@ package main
 import (
 	"dynamic-user-segmentation/config"
 	v1 "dynamic-user-segmentation/internal/controller/http/v1"
-	"dynamic-user-segmentation/internal/repository"
+	postgresql2 "dynamic-user-segmentation/internal/repository"
 	"dynamic-user-segmentation/internal/service"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	"dynamic-user-segmentation/pkg/hash"
@@ -16,6 +16,7 @@ import (
 	"syscall"
 )
 
+// @swagger 2.0
 // @title Dynamic User Segmentation Swagger API
 // @version 0.0.1
 // @description This is service for user analytics and slugs
@@ -55,7 +56,7 @@ func main() {
 	defer pg.Close()
 
 	logger.Info("Initializing repositories...")
-	repositories := repository.NewRepositories(pg)
+	repositories := postgresql2.NewRepositories(pg)
 
 	logger.Info("Initializing services...")
 	dependencies := service.ServicesDependencies{

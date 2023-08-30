@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
-	postgres "dynamic-user-segmentation/internal/repository/db/postgresql"
+	postgresql2 "dynamic-user-segmentation/internal/repository/db/postgresql"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	"time"
 )
@@ -67,11 +67,11 @@ type Repositories struct {
 
 func NewRepositories(pg *postgresql.PostgreSQL) *Repositories {
 	return &Repositories{
-		Actions:           postgres.NewActionsRepository(pg),
-		Consumers:         postgres.NewConsumersRepository(pg),
-		ConsumersSegments: postgres.NewConsumersSegmentsRepository(pg),
-		Operations:        postgres.NewOperationsRepository(pg),
-		Segments:          postgres.NewSegmentsRepository(pg),
-		Users:             postgres.NewUsersRepository(pg),
+		Actions:           postgresql2.NewActionsRepository(pg),
+		Consumers:         postgresql2.NewConsumersRepository(pg),
+		ConsumersSegments: postgresql2.NewConsumersSegmentsRepository(pg),
+		Operations:        postgresql2.NewOperationsRepository(pg),
+		Segments:          postgresql2.NewSegmentsRepository(pg),
+		Users:             postgresql2.NewUsersRepository(pg),
 	}
 }

@@ -3,7 +3,7 @@ package postgresql
 import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
-	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	e "dynamic-user-segmentation/pkg/util/errors"
 	"errors"
@@ -33,7 +33,7 @@ func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string,
 		var pgErr *pgconn.PgError
 		if ok := errors.As(err, &pgErr); ok {
 			if pgErr.Code == "23505" {
-				return 0, repository.ErrAlreadyExists
+				return 0, respository_errors.ErrAlreadyExists
 			}
 		}
 		return 0, e.Wrap("can't do a query: ", err)
@@ -51,7 +51,7 @@ func (sr *SegmentsRepository) DeleteSegment(ctx context.Context, id int) error {
 	_, err = sr.Pool.Exec(ctx, query, id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return repository.ErrNotFound
+			return respository_errors.ErrNotFound
 		}
 		return e.Wrap("can't do a query: ", err)
 	}
@@ -82,7 +82,7 @@ func (sr *SegmentsRepository) GetSegmentById(ctx context.Context, id int) (strin
 	err = sr.Pool.QueryRow(ctx, query, id).Scan(&name)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", repository.ErrNotFound
+			return "", respository_errors.ErrNotFound
 		}
 		return "", e.Wrap("can't do query: ", err)
 	}
@@ -101,7 +101,7 @@ func (sr *SegmentsRepository) GetIdBySegment(ctx context.Context, segment string
 	err = sr.Pool.QueryRow(ctx, query, segment).Scan(&id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return 0, repository.ErrNotFound
+			return 0, respository_errors.ErrNotFound
 		}
 		return 0, e.Wrap("can't do a query: ", err)
 	}

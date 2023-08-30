@@ -28,8 +28,8 @@ func newSegmentRoutes(group *echo.Group, segmentsService service.Segments) {
 // @Produce json
 // @Param input body dto.SegmentsRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/segments/create [post]
 func (sr *segmentsRoutes) create(ctx echo.Context) error {
@@ -62,8 +62,8 @@ func (sr *segmentsRoutes) create(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.SegmentsRequest true "input"
 // @Success 200
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/segments/update [patch]
 func (sr *segmentsRoutes) update(ctx echo.Context) error {
@@ -96,8 +96,8 @@ func (sr *segmentsRoutes) update(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.SegmentsRequest true "input"
 // @Success 200
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/segments/delete [delete]
 func (sr *segmentsRoutes) delete(ctx echo.Context) error {

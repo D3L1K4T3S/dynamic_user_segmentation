@@ -1,10 +1,413 @@
+basePath: /
+definitions:
+  dto.ActionsRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.AuthUser:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.ConsumerId:
+    properties:
+      consumer_id:
+        type: integer
+    type: object
+  dto.ConsumerRequest:
+    properties:
+      consumer_id:
+        type: integer
+      segments:
+        items:
+          $ref: '#/definitions/dto.DataSegments'
+        type: array
+    type: object
+  dto.DataSegments:
+    properties:
+      segment_name:
+        type: string
+      ttl:
+        type: string
+    type: object
+  dto.OperationsRequest:
+    properties:
+      consumer_id:
+        type: integer
+      end_at:
+        type: string
+      start_at:
+        type: string
+    type: object
+  dto.SegmentsRequest:
+    properties:
+      name:
+        type: string
+      percent:
+        type: number
+    type: object
+host: localhost:8080
 info:
   contact:
     email: zhelagin.egor@yandex.ru
     name: Egor Zhelagin
+  description: This is service for user analytics and slugs
   license:
     name: MIT
   title: Dynamic User Segmentation Swagger API
   version: 0.0.1
-paths: {}
+paths:
+  /api/v1/actions/create:
+    post:
+      consumes:
+      - application/json
+      description: Create action
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ActionsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - actions
+  /api/v1/actions/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete action
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ActionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - actions
+  /api/v1/consumers/add:
+    put:
+      consumes:
+      - application/json
+      description: Add segments to consumer
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConsumerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - consumers
+  /api/v1/consumers/create:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConsumerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - consumers
+  /api/v1/consumers/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user segment
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConsumerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - consumers
+  /api/v1/consumers/get:
+    get:
+      consumes:
+      - application/json
+      description: Get all segments consumer
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConsumerId'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - consumers
+  /api/v1/consumers/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update ttl for segment consumer
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConsumerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - consumers
+  /api/v1/operations/:
+    get:
+      consumes:
+      - application/json
+      description: Get history operations json
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OperationsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - operations
+  /api/v1/operations/file:
+    get:
+      consumes:
+      - application/json
+      description: Get file
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OperationsRequest'
+      produces:
+      - text/csv
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - operations
+  /api/v1/segments/create:
+    post:
+      consumes:
+      - application/json
+      description: Create segment
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SegmentsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - segments
+  /api/v1/segments/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete segment
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SegmentsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - segments
+  /api/v1/segments/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update percent in segment
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SegmentsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - segments
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sing In for users
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Sing Up for users
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - JWT: []
+      tags:
+      - auth
 swagger: "2.0"

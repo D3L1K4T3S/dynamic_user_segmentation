@@ -27,8 +27,8 @@ func newOperationsRoutes(group *echo.Group, operations service.Operations) {
 // @Produce json
 // @Param input body dto.OperationsRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/operations/ [get]
 func (or *operationRoutes) getOperations(ctx echo.Context) error {
@@ -56,8 +56,8 @@ func (or *operationRoutes) getOperations(ctx echo.Context) error {
 // @Produce text/csv
 // @Param input body dto.OperationsRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/operations/file [get]
 func (or *operationRoutes) getFileLink(ctx echo.Context) error {

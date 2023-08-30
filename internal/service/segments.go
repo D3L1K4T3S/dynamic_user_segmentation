@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/internal/service/dto"
 	e "dynamic-user-segmentation/pkg/util/errors"
 )
@@ -26,14 +27,14 @@ func (ss *SegmentsService) DeleteSegment(ctx context.Context, segment dto.Segmen
 
 	id, err := ss.segments.GetIdBySegment(ctx, segment.Name)
 	if err != nil {
-		return repository.ErrNotFound
+		return respository_errors.ErrNotFound
 	}
 	return ss.segments.DeleteSegment(ctx, id)
 }
 func (ss *SegmentsService) UpdateSegment(ctx context.Context, segment dto.SegmentsRequest) error {
 	id, err := ss.segments.GetIdBySegment(ctx, segment.Name)
 	if err != nil {
-		return repository.ErrNotFound
+		return respository_errors.ErrNotFound
 	}
 	return ss.segments.UpdateSegment(ctx, id, segment.Percent)
 }

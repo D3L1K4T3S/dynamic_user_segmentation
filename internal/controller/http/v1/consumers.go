@@ -30,10 +30,10 @@ func newConsumersRoutes(group *echo.Group, consumers service.Consumers) {
 // @Produce json
 // @Param input body dto.ConsumerRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
-// @Router /api/v1/consumers/create [create]
+// @Router /api/v1/consumers/create [post]
 func (cr *consumersRoutes) create(ctx echo.Context) error {
 	var input dto.ConsumerRequest
 
@@ -62,8 +62,8 @@ func (cr *consumersRoutes) create(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.ConsumerRequest true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/consumers/add [put]
 func (cr *consumersRoutes) add(ctx echo.Context) error {
@@ -86,7 +86,7 @@ func (cr *consumersRoutes) add(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, struct {
-		Id int `json:"id"`
+		Id []int `json:"id"`
 	}{id})
 }
 
@@ -96,8 +96,8 @@ func (cr *consumersRoutes) add(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.ConsumerId true "input"
 // @Success 201
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/consumers/get [get]
 func (cr *consumersRoutes) get(ctx echo.Context) error {
@@ -127,8 +127,8 @@ func (cr *consumersRoutes) get(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.ConsumerRequest true "input"
 // @Success 200
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/consumers/update [patch]
 func (cr *consumersRoutes) update(ctx echo.Context) error {
@@ -157,8 +157,8 @@ func (cr *consumersRoutes) update(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.ConsumerRequest true "input"
 // @Success 200
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400
+// @Failure 500
 // @Security JWT
 // @Router /api/v1/consumers/delete [delete]
 func (cr *consumersRoutes) delete(ctx echo.Context) error {

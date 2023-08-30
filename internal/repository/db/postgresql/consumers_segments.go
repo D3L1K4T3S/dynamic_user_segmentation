@@ -2,7 +2,7 @@ package postgresql
 
 import (
 	"context"
-	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	e "dynamic-user-segmentation/pkg/util/errors"
 	"errors"
@@ -59,7 +59,7 @@ func (csr *ConsumersSegmentsRepository) DeleteConsumerSegment(ctx context.Contex
 	_, err = csr.Pool.Exec(ctx, query, consumerId, segmentName)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return repository.ErrNotFound
+			return respository_errors.ErrNotFound
 		}
 		return e.Wrap("can't do a query: ", err)
 	}
@@ -90,7 +90,7 @@ func (csr *ConsumersSegmentsRepository) GetSegmentIdById(ctx context.Context, id
 	var segmentId int
 	err = csr.Pool.QueryRow(ctx, query, id).Scan(&segmentId)
 	if err != nil {
-		return 0, repository.ErrNotFound
+		return 0, respository_errors.ErrNotFound
 	}
 	return id, nil
 }

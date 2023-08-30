@@ -3,7 +3,7 @@ package postgresql
 import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
-	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	e "dynamic-user-segmentation/pkg/util/errors"
 	"errors"
@@ -34,7 +34,7 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (i
 		var pgErr *pgconn.PgError
 		if ok := errors.As(err, &pgErr); ok {
 			if pgErr.Code == "23505" {
-				return 0, repository.ErrAlreadyExists
+				return 0, respository_errors.ErrAlreadyExists
 			}
 		}
 		return 0, e.Wrap("can't do a query: ", err)
@@ -53,7 +53,7 @@ func (ur *UsersRepository) DeleteUser(ctx context.Context, user entity.Users) er
 	_, err = ur.Pool.Exec(ctx, query, user.Username, user.Password)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return repository.ErrNotFound
+			return respository_errors.ErrNotFound
 		}
 		return e.Wrap("can't do a query: ", err)
 	}
@@ -73,7 +73,7 @@ func (ur *UsersRepository) GetUserByID(ctx context.Context, id int) (entity.User
 	err = ur.Pool.QueryRow(ctx, query, id).Scan(&user.Username, &user.Password)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return entity.Users{}, repository.ErrNotFound
+			return entity.Users{}, respository_errors.ErrNotFound
 		}
 		return entity.Users{}, err
 	}
@@ -93,7 +93,7 @@ func (ur *UsersRepository) GetUserByUsername(ctx context.Context, username strin
 	err = ur.Pool.QueryRow(ctx, query, username).Scan(&user.Id, &user.Password)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return entity.Users{}, repository.ErrNotFound
+			return entity.Users{}, respository_errors.ErrNotFound
 		}
 		return entity.Users{}, err
 	}
@@ -112,7 +112,7 @@ func (ur *UsersRepository) GetIdByUsername(ctx context.Context, username string)
 	err = ur.Pool.QueryRow(ctx, query, username).Scan(&id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return 0, repository.ErrNotFound
+			return 0, respository_errors.ErrNotFound
 		}
 		return 0, err
 	}

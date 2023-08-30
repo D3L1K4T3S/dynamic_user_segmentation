@@ -4,6 +4,7 @@ import (
 	"context"
 	"dynamic-user-segmentation/internal/entity"
 	"dynamic-user-segmentation/internal/repository"
+	"dynamic-user-segmentation/internal/repository/respository_errors"
 	"dynamic-user-segmentation/internal/service/dto"
 	"dynamic-user-segmentation/pkg/util/count_percent"
 	e "dynamic-user-segmentation/pkg/util/errors"
@@ -48,7 +49,7 @@ func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.Con
 	for _, value := range consumer.Segments {
 		segmentId, err = cs.segments.GetIdBySegment(ctx, value.SegmentName)
 		if err != nil {
-			return nil, repository.ErrNotFound
+			return nil, respository_errors.ErrNotFound
 		}
 
 		if value.TTL.IsZero() {
@@ -65,13 +66,13 @@ func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.Con
 
 		id, err = cs.consumers.CreateConsumer(ctx, consSegmentId, consumer.ConsumerId)
 		if err != nil {
-			return nil, repository.ErrCannotCreate
+			return nil, respository_errors.ErrCannotCreate
 		}
 		res = append(res, id)
 
 		_, err = cs.operations.AddOperation(ctx, consumer.ConsumerId, consSegmentId, actionId)
 		if err != nil {
-			return nil, repository.ErrCannotCreate
+			return nil, respository_errors.ErrCannotCreate
 		}
 	}
 
@@ -83,7 +84,7 @@ func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.Con
 	for _, segmentId = range extRes {
 		_, err = cs.operations.AddOperation(ctx, consumer.ConsumerId, segmentId, actionId)
 		if err != nil {
-			return nil, repository.ErrCannotCreate
+			return nil, respository_errors.ErrCannotCreate
 		}
 	}
 
@@ -114,7 +115,7 @@ func (cs *ConsumersService) AddSegmentsToConsumer(ctx context.Context, consumer 
 	for _, value := range consumer.Segments {
 		segmentId, err = cs.segments.GetIdBySegment(ctx, value.SegmentName)
 		if err != nil {
-			return nil, repository.ErrNotFound
+			return nil, respository_errors.ErrNotFound
 		}
 
 		if value.TTL.IsZero() {
@@ -131,14 +132,14 @@ func (cs *ConsumersService) AddSegmentsToConsumer(ctx context.Context, consumer 
 
 		id, err = cs.consumers.CreateConsumer(ctx, consSegmentId, consumer.ConsumerId)
 		if err != nil {
-			return nil, repository.ErrCannotAdd
+			return nil, respository_errors.ErrCannotAdd
 		}
 
 		res = append(res, id)
 
 		_, err = cs.operations.AddOperation(ctx, consumer.ConsumerId, consSegmentId, actionId)
 		if err != nil {
-			return nil, repository.ErrCannotCreate
+			return nil, respository_errors.ErrCannotCreate
 		}
 
 	}
