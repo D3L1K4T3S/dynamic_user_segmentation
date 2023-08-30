@@ -11,26 +11,32 @@ import (
 type Actions interface {
 	CreateAction(ctx context.Context, action string) (int, error)
 	DeleteAction(ctx context.Context, action string) error
-	GetActionById(ctx context.Context, actionId int) (entity.Actions, error)
+	//GetActionById(ctx context.Context, actionId int) (string, error)
 	GetIdByAction(ctx context.Context, action string) (int, error)
 }
 
 type Consumers interface {
-	CreateConsumer(ctx context.Context, consumerId int) (int, error)
+	CreateConsumer(ctx context.Context, consumerId int, segmentId int) (int, error)
 	DeleteConsumer(ctx context.Context, consumerId int) error
 	AddSegmentToConsumer(ctx context.Context, id int, segmentId int) error
 	GetSegmentsById(ctx context.Context, consumerId int) ([]int, error)
-	DeleteSegmentFromConsumer(ctx context.Context, id int, segmentId int) error
+	DeleteSegmentFromConsumer(ctx context.Context, consumerId int, segmentName string) error
+	GetCountConsumers(ctx context.Context) (int, error)
+	GetAllSegmentsByConsumerId(ctx context.Context, consumerId int) ([]entity.ComplexConsumerSegments, error)
 }
 
 type ConsumersSegments interface {
-	AddConsumerSegment(ctx context.Context, segmentId int, TTL time.Time) (int, error)
-	DeleteConsumerSegment(ctx context.Context, segmentId int) error
-	UpdateSegmentTTL(ctx context.Context, segmentId int, TTL time.Time) error
+	AddConsumerSegmentTTL(ctx context.Context, segmentId int, TTL time.Time) (int, error)
+	AddConsumerSegment(ctx context.Context, segmentId int) (int, error)
+	DeleteConsumerSegment(ctx context.Context, consumerId int, segmentName string) error
+	GetSegmentIdById(ctx context.Context, id int) (int, error)
+	UpdateSegmentTTL(ctx context.Context, consumerId int, segmentName string, TTL time.Time) error
+	DeleteExpiredTTL(ctx context.Context, consumerId int) error
 }
 
 type Operations interface {
-	GetOperationsInTime(ctx context.Context, start, end time.Time) ([]entity.Operations, error)
+	GetOperationsInTime(ctx context.Context, consumerId int, start, end time.Time) ([]entity.ComplexOperations, error)
+	AddOperation(ctx context.Context, consumerId int, segmentId int, actionId int) (int, error)
 }
 
 type Segments interface {
@@ -39,6 +45,7 @@ type Segments interface {
 	UpdateSegment(ctx context.Context, id int, percent float64) error
 	GetSegmentById(ctx context.Context, id int) (string, error)
 	GetIdBySegment(ctx context.Context, segment string) (int, error)
+	GetAllSegments(ctx context.Context) ([]entity.Segments, error)
 }
 
 type Users interface {

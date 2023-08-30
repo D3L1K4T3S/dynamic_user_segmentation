@@ -2,7 +2,6 @@ package postgresql
 
 import (
 	"context"
-	"dynamic-user-segmentation/internal/entity"
 	"dynamic-user-segmentation/internal/repository"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	e "dynamic-user-segmentation/pkg/util/errors"
@@ -57,25 +56,6 @@ func (ar *ActionsRepository) DeleteAction(ctx context.Context, action string) er
 	}
 	return nil
 }
-func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (entity.Actions, error) {
-	var err error
-	defer func() {
-		err = e.WrapIfErr("problem with get action by id: ", err)
-	}()
-
-	query := "SELECT name FROM actions WHERE id = $1"
-
-	var action entity.Actions
-	err = ar.Pool.QueryRow(ctx, query, actionId).Scan(&action.Name)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return entity.Actions{}, repository.ErrNotFound
-		}
-		return entity.Actions{}, err
-	}
-	action.Id = actionId
-	return action, nil
-}
 func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action string) (int, error) {
 	var err error
 	defer func() {
@@ -95,3 +75,22 @@ func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action string) (
 
 	return id, nil
 }
+
+//func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (string, error) {
+//	var err error
+//	defer func() {
+//		err = e.WrapIfErr("problem with get action by id: ", err)
+//	}()
+//
+//	query := "SELECT name FROM actions WHERE id = $1"
+//
+//	var action string
+//	err = ar.Pool.QueryRow(ctx, query, actionId).Scan(&action)
+//	if err != nil {
+//		if errors.Is(err, pgx.ErrNoRows) {
+//			return "", repository.ErrNotFound
+//		}
+//		return "", err
+//	}
+//	return action, nil
+//}

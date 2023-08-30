@@ -16,26 +16,25 @@ func NewOperationsRepository(pg *postgresql.PostgreSQL) *OperationsRepository {
 	return &OperationsRepository{pg}
 }
 
-func (or *OperationsRepository) GetOperationsInTime(ctx context.Context, start, end time.Time) ([]entity.Operations, error) {
+func (or *OperationsRepository) GetOperationsInTime(ctx context.Context, consumerId int, start, end time.Time) ([]entity.ComplexOperations, error) {
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem with get operation in time: ", err)
 	}()
 
-	query := "SELECT * FROM operations WHERE created_at >= $1 and created_at <= $2"
+	query := "SELECT consumer_id, segments.name, actions.name, created_at FROM OPERATIONS LEFT JOIN SEGMENTS ON OPERATIONS.segment_id = segments.id LEFT JOIN ACTIONS ON OPERATIONS.action_id = ACTIONS.id WHERE OPERATIONS.consumer_id = $1 AND created_at >= $2 AND created_at =< $3;"
 
-	rows, err := or.Pool.Query(ctx, query, start, end)
+	rows, err := or.Pool.Query(ctx, query, consumerId, start, end)
 	if err != nil {
 		return nil, e.Wrap("can't query: ", err)
 	}
 
 	defer rows.Close()
 
-	var operations []entity.Operations
+	var operations []entity.ComplexOperations
 	for rows.Next() {
-		var operation entity.Operations
-		err = rows.Scan(&operation.Id, &operation.ConsumerId,
-			&operation.SegmentId, &operation.ActionId, &operation.Created)
+		var operation entity.ComplexOperations
+		err = rows.Scan(&operation.ConsumerId, &operation.SegmentName, &operation.ActionName, &operation.Created)
 		if err != nil {
 			return nil, e.Wrap("can't scan in struct data: ", err)
 		}
@@ -43,4 +42,20 @@ func (or *OperationsRepository) GetOperationsInTime(ctx context.Context, start, 
 	}
 
 	return operations, nil
+}
+func (or *OperationsRepository) AddOperation(ctx context.Context, consumerId int, segmentId int, actionId int) (int, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("Postgresql operations: ", err)
+	}()
+
+	query := "INSERT INTO operations VALUES ($1,$2,$3,$4) RETURNING id"
+
+	var id int
+	err = or.Pool.QueryRow(ctx, query, consumerId, segmentId, actionId).Scan(&id)
+	if err != nil {
+		return 0, e.Wrap("can't do a query: ", err)
+	}
+
+	return id, nil
 }

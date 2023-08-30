@@ -2,6 +2,7 @@ package postgresql
 
 import (
 	"context"
+	"dynamic-user-segmentation/internal/entity"
 	"dynamic-user-segmentation/internal/repository"
 	"dynamic-user-segmentation/pkg/client/db/postgresql"
 	e "dynamic-user-segmentation/pkg/util/errors"
@@ -106,4 +107,31 @@ func (sr *SegmentsRepository) GetIdBySegment(ctx context.Context, segment string
 	}
 
 	return id, nil
+}
+func (sr *SegmentsRepository) GetAllSegments(ctx context.Context) ([]entity.Segments, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("Repository postgres: ", err)
+	}()
+
+	query := "SELECT * FROM segments"
+
+	rows, err := sr.Pool.Query(ctx, query)
+	if err != nil {
+		return nil, e.Wrap("can't do a query: ", err)
+	}
+
+	defer rows.Close()
+
+	var segments []entity.Segments
+	for rows.Next() {
+		var segment entity.Segments
+		err = rows.Scan(&segment.Id, &segment.Name, &segment.Percent)
+		if err != nil {
+			return nil, e.Wrap("can't scan from rows: ", err)
+		}
+		segments = append(segments, segment)
+	}
+
+	return segments, nil
 }
