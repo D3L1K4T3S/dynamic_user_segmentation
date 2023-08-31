@@ -196,18 +196,21 @@ func (cs *ConsumersService) DeleteSegmentsFromConsumer(ctx context.Context, cons
 
 		segmentId, err = cs.segments.GetIdBySegment(ctx, segment.SegmentName)
 		if err != nil {
-			return respository_errors.ErrNotFound
+			return ErrSegmentNotFound
 		}
 
 		_, err = cs.operations.AddOperation(ctx, consumer.ConsumerId, segmentId, actionId)
 		if err != nil {
-			return respository_errors.ErrCannotCreate
+			return e.Wrap("can't add operation", err)
 		}
 	}
 
 	check, err := cs.consumers.GetSegmentsById(ctx, consumer.ConsumerId)
 	if len(check) == 0 {
-		return ErrUserNotFound
+		_, err = cs.consumers.AddNullSegmentByConsumerId(ctx, consumer.ConsumerId)
+		if err != nil {
+			return e.Wrap("can't add null segments", err)
+		}
 	}
 
 	return nil

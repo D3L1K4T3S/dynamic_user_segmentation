@@ -175,6 +175,11 @@ func (cr *consumersRoutes) delete(ctx echo.Context) error {
 			ErrResponse(ctx, http.StatusBadRequest, service.ErrUserNotFound.Error())
 			return err
 		}
+		if errors.Is(err, service.ErrSegmentNotFound) {
+			ErrResponse(ctx, http.StatusBadRequest, service.ErrSegmentNotFound.Error())
+			return err
+		}
+
 		ErrResponse(ctx, http.StatusInternalServerError, ErrInternalServer.Error())
 		return err
 	}

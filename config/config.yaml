@@ -1,6 +1,6 @@
 app:
   name: 'dynamic-user-segmentation'
-  version: '0.2.0'
+  version: '1.0.0'
   env: 'local'
 
 http:

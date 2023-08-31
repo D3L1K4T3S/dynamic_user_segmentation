@@ -1,0 +1,266 @@
+{
+	"info": {
+		"_postman_id": "307ec003-9743-4c37-ba61-d981a1d38970",
+		"name": "AvitoBackend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28727595"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "sing up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"admin\",\n    \"password\":\"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/auth/sing-up"
+					},
+					"response": []
+				},
+				{
+					"name": "sign-in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"admin\",\n    \"password\":\"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/auth/sign-in"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actions",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"create\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/actions/create"
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/v1/actions/delete"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Consumers",
+			"item": [
+				{
+					"name": "create consumer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":26,\n    \"segments\":\n    [\n        {\n            \"segment_name\":\"discount\",\n            \"ttl\":\"2023-08-31T14:45:10Z\"\n        }\n        \n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/consumers/create"
+					},
+					"response": []
+				},
+				{
+					"name": "add segments",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":1,\n    \"segments\":\n    [\n        {\n            \"segment_name\":\"voice\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/consumers/add"
+					},
+					"response": []
+				},
+				{
+					"name": "get segments",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/consumers/get"
+					},
+					"response": []
+				},
+				{
+					"name": "update TTL",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "localhost:8081/api/v1/consumers/update"
+					},
+					"response": []
+				},
+				{
+					"name": "delete consumer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":1,\n    \"segment_name\":\"discount\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/consumers/delete"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Operations",
+			"item": [
+				{
+					"name": "get operations json",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":1,\n    \"start_at\": \"2023-06-17T14:43:11Z\",\n    \"end_at\": \"2023-10-20T14:43:11Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/operations/"
+					},
+					"response": []
+				},
+				{
+					"name": "get csv",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/v1/operations/file"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Segments",
+			"item": [
+				{
+					"name": "create segment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"voice\",\n    \"percent\":8.5\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/segments/create"
+					},
+					"response": []
+				},
+				{
+					"name": "update percents",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"discount\",\n    \"percent\":8\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/segments/update"
+					},
+					"response": []
+				},
+				{
+					"name": "delete segment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"discount\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/v1/segments/delete"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -49,7 +49,7 @@ func (as *AuthService) CreateUser(ctx context.Context, authUser dto.AuthUser) (i
 	userId, err := as.usersRepository.CreateUser(ctx, user)
 	if err != nil {
 		if errors.Is(err, respository_errors.ErrAlreadyExists) {
-			return 0, respository_errors.ErrAlreadyExists
+			return 0, ErrUserAlreadyExists
 		}
 		return 0, e.Wrap("can't create user: ", err)
 	}

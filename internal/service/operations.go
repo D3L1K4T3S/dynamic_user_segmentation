@@ -65,10 +65,12 @@ func (os *OperationsService) GetHistoryForPeriod(ctx context.Context, request dt
 	}
 
 	var operations dto.OperationsResponse
-	for i, v := range res {
-		operations.OperationsData[i].ActionName = v.ActionName
-		operations.OperationsData[i].SegmentName = v.SegmentName
-		operations.OperationsData[i].Date = v.Created
+	for _, v := range res {
+		var operation dto.OperationsData
+		operation.ActionName = v.ActionName
+		operation.SegmentName = v.SegmentName
+		operation.Date = v.Created
+		operations.OperationsData = append(operations.OperationsData, operation)
 	}
 	operations.ConsumerId = request.ConsumerId
 

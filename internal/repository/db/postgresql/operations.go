@@ -22,7 +22,7 @@ func (or *OperationsRepository) GetOperationsInTime(ctx context.Context, consume
 		err = e.WrapIfErr("problem with get operation in time: ", err)
 	}()
 
-	query := "SELECT consumer_id, segments.name, actions.name, created_at FROM OPERATIONS LEFT JOIN SEGMENTS ON OPERATIONS.segment_id = segments.id LEFT JOIN ACTIONS ON OPERATIONS.action_id = ACTIONS.id WHERE OPERATIONS.consumer_id = $1 AND created_at >= $2 AND created_at =< $3;"
+	query := "SELECT consumer_id, segments.name, actions.name, created_at FROM OPERATIONS LEFT JOIN SEGMENTS ON OPERATIONS.segment_id = segments.id LEFT JOIN ACTIONS ON OPERATIONS.action_id = ACTIONS.id WHERE OPERATIONS.consumer_id = $1 AND created_at >= $2 AND created_at <= $3;"
 
 	rows, err := or.Pool.Query(ctx, query, consumerId, start, end)
 	if err != nil {
