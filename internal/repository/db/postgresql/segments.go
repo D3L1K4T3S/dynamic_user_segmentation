@@ -116,3 +116,19 @@ func (sr *SegmentsRepository) GetAllSegments(ctx context.Context) ([]entity.Segm
 
 	return segments, nil
 }
+
+func (sr *SegmentsRepository) ExistSegmentConsumer(ctx context.Context, consumerId int, segmentName string) (bool, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr("Repository segments: ", err)
+	}()
+
+	query := "SELECT EXISTS (SELECT* FROM consumers LEFT JOIN CONSUMERS_SEGMENTS ON consumers.segment_id = CONSUMERS_SEGMENTS.id LEFT JOIN SEGMENTS ON CONSUMERS_SEGMENTS.segment_id = SEGMENTS.id WHERE SEGMENTS.name = $2 and CONSUMERS.consumer_id = $1)"
+
+	var res bool
+	err = sr.Pool.QueryRow(ctx, query, consumerId, segmentName).Scan(&res)
+	if err != nil {
+		return false, e.Wrap("can't exist segment: ", err)
+	}
+	return res, nil
+}

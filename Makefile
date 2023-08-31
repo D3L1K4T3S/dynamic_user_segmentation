@@ -38,10 +38,6 @@ migrate-down: ### Убрать миграцию
 	echo "y" | migrate -path migrations -database '$(PG_URL)?sslmode=disable' down
 .PHONY: migrate-down
 
-linter-golangci: ### Проверка линтером golangci
-	golangci-lint run
-.PHONY: linter-golangci
-
 help: ## Все возможные команды для работы с проектом
 	@awk 'BEGIN {FS = ":.*##"; printf "\nКоманды:\n  make \033[36m<команда>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 .PHONY: help

@@ -4,7 +4,7 @@ app:
   env: 'local'
 
 http:
-  host: localhost
+  host: 0.0.0.0
   port: 8081
 
 log:
@@ -12,8 +12,8 @@ log:
 
 storage:
   max_pool_size: 20
-  host: localhost
-  port: 5432
+  host: host.docker.internal
+  port: 5433
   user: postgres
   password: BenQuB43
   database: postgres

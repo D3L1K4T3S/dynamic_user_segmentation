@@ -139,3 +139,20 @@ func (cr *ConsumersRepository) AddNullSegmentByConsumerId(ctx context.Context, c
 	}
 	return id, nil
 }
+
+func (cr *ConsumersRepository) ExistConsumer(ctx context.Context, consumerId int) (bool, error) {
+	var err error
+	defer func() {
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
+	}()
+
+	query := "SELECT EXISTS (SELECT * FROM consumers WHERE consumers.consumer_id = $1)"
+
+	var res bool
+	err = cr.Pool.QueryRow(ctx, query, consumerId).Scan(&res)
+	if err != nil {
+		return false, e.Wrap(respository_errors.CannotDoQueryMsg, err)
+	}
+	return res, nil
+
+}

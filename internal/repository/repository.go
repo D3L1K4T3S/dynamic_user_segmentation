@@ -21,6 +21,7 @@ type Consumers interface {
 	GetAllSegmentsByConsumerId(ctx context.Context, consumerId int) ([]entity.ComplexConsumerSegments, error)
 	DeleteNullSegmentByConsumerId(ctx context.Context, consumerId int) error
 	AddNullSegmentByConsumerId(ctx context.Context, consumerId int) (int, error)
+	ExistConsumer(ctx context.Context, consumerId int) (bool, error)
 }
 
 type ConsumersSegments interface {
@@ -42,6 +43,7 @@ type Segments interface {
 	UpdateSegment(ctx context.Context, id int, percent float64) error
 	GetIdBySegment(ctx context.Context, segment string) (int, error)
 	GetAllSegments(ctx context.Context) ([]entity.Segments, error)
+	ExistSegmentConsumer(ctx context.Context, consumerId int, segmentName string) (bool, error)
 }
 
 type Users interface {

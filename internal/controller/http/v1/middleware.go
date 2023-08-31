@@ -3,12 +3,13 @@ package v1
 import (
 	"dynamic-user-segmentation/internal/service"
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 	"strings"
 )
 
 const (
-	prefix = "Bearer"
+	prefix = "Bearer "
 	uId    = "userId"
 )
 
@@ -20,6 +21,7 @@ func (a *AuthMiddleware) CheckUser(handler echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		token, ok := checkToken(ctx.Request())
 		if !ok {
+			log.Println("Use bearerToken: ", ErrInvalidAuth)
 			ErrResponse(ctx, http.StatusUnauthorized, ErrInvalidAuth.Error())
 			return nil
 		}
@@ -46,30 +48,3 @@ func checkToken(r *http.Request) (string, bool) {
 	}
 	return "", false
 }
-
-//type TTLMiddleware struct {
-//
-//}
-//
-//func (ttl *TTLMiddleware) CheckTTL(handler echo.HandlerFunc) echo.HandlerFunc {
-//	return func(ctx echo.Context) error {
-//
-//	}
-//}
-
-//type AutomaticAddMiddleware struct {
-//}
-//
-//func (aa *AutomaticAddMiddleware) AutomaticAdd(handler echo.HandlerFunc) echo.HandlerFunc {
-//	return func(ctx echo.Context) error {
-//
-//	}
-//}
-//
-//func checkCount(count int, percent float64) bool {
-//	number := int(math.Round(1 / percent))
-//	if count%number == 0 {
-//		return true
-//	}
-//	return false
-//}

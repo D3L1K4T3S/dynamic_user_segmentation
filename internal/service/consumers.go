@@ -30,6 +30,7 @@ func NewConsumersService(consumers repository.Consumers, segments repository.Seg
 }
 
 func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.ConsumerRequest) ([]int, error) {
+
 	var err error
 	var consSegmentId int
 	var segmentId int
@@ -39,8 +40,11 @@ func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.Con
 		err = e.WrapIfErr("Service consumer: ", err)
 	}()
 
-	check, err := cs.consumers.GetSegmentsById(ctx, consumer.ConsumerId)
-	if len(check) > 0 {
+	ok, err := cs.consumers.ExistConsumer(ctx, consumer.ConsumerId)
+	if err != nil {
+		return nil, e.Wrap("can't check exist consumer: ", err)
+	}
+	if ok {
 		return nil, ErrUserAlreadyExists
 	}
 
@@ -74,6 +78,14 @@ func (cs *ConsumersService) CreateConsumer(ctx context.Context, consumer dto.Con
 		segmentId, err = cs.segments.GetIdBySegment(ctx, value.SegmentName)
 		if err != nil {
 			return nil, respository_errors.ErrNotFound
+		}
+
+		ok, err = cs.segments.ExistSegmentConsumer(ctx, consumer.ConsumerId, value.SegmentName)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			continue
 		}
 
 		if !value.TTL.IsZero() {
@@ -123,12 +135,17 @@ func (cs *ConsumersService) AddSegmentsToConsumer(ctx context.Context, consumer 
 		err = e.WrapIfErr("Service consumer: ", err)
 	}()
 
-	check, err := cs.consumers.GetSegmentsById(ctx, consumer.ConsumerId)
-	if len(check) == 0 {
+	ok, err := cs.consumers.ExistConsumer(ctx, consumer.ConsumerId)
+	if err != nil {
+		return nil, e.Wrap("can't check exist consumer: ", err)
+	}
+	if !ok {
 		return nil, ErrUserNotFound
 	}
 
-	if len(check) == 1 && check[0] == 0 {
+	check, err := cs.consumers.GetSegmentsById(ctx, consumer.ConsumerId)
+
+	if len(check) == 0 {
 		err = cs.consumers.DeleteNullSegmentByConsumerId(ctx, consumer.ConsumerId)
 		if err != nil {
 			return nil, err
@@ -148,6 +165,14 @@ func (cs *ConsumersService) AddSegmentsToConsumer(ctx context.Context, consumer 
 		segmentId, err = cs.segments.GetIdBySegment(ctx, value.SegmentName)
 		if err != nil {
 			return nil, respository_errors.ErrNotFound
+		}
+
+		ok, err = cs.segments.ExistSegmentConsumer(ctx, consumer.ConsumerId, value.SegmentName)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			continue
 		}
 
 		if !value.TTL.IsZero() {
