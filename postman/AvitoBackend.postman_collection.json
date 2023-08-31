@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "307ec003-9743-4c37-ba61-d981a1d38970",
 		"name": "AvitoBackend",
+		"description": "Если используется версия",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "28727595"
 	},
@@ -54,7 +55,13 @@
 					"name": "create",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImV4cCI6MTY5MzUwNDM5OCwiaWF0IjoxNjkzNDk3MTk4fQ.XwIPyp4-3JoNN6p14J9kCzPXmH_4eQ3LdLhl-Ewuhs4",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\":\"create\"\n}",
@@ -86,17 +93,23 @@
 					"name": "create consumer",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImV4cCI6MTY5MzUwNTQxNywiaWF0IjoxNjkzNDk4MjE3fQ.TeJqIs83XuT1Pq9M_l8YofP1e3FR25eoSYfOJOU9fOY",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"consumer_id\":26,\n    \"segments\":\n    [\n        {\n            \"segment_name\":\"discount\",\n            \"ttl\":\"2023-08-31T14:45:10Z\"\n        }\n        \n    ]\n}",
+							"raw": "{\n    \"consumer_id\":55,\n    \"segments\":\n    [\n        {\n            \"segment_name\":\"voice\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/consumers/create"
+						"url": "localhost:8089/api/v1/consumers/create"
 					},
 					"response": []
 				},
@@ -135,7 +148,7 @@
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/consumers/get"
+						"url": "localhost:8089/api/v1/consumers/get"
 					},
 					"response": []
 				},
@@ -143,8 +156,23 @@
 					"name": "update TTL",
 					"request": {
 						"method": "PATCH",
-						"header": [],
-						"url": "localhost:8081/api/v1/consumers/update"
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImV4cCI6MTY5MzUwNTk0OSwiaWF0IjoxNjkzNDk4NzQ5fQ.BWgcRyETAmP5NxA3MHNDO7NfI04u8So9B0JKFh72ysw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":1,\n    \"segments\":\n    [\n        {\n            \"segment_name\":\"discount\",\n            \"ttl\":\"2023-06-17T14:43:11Z\"\n        },\n        {\n            \"segment_name\":\"discount\",\n            \"ttl\":\"2023-06-17T14:44:11Z\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8089/api/v1/consumers/update"
 					},
 					"response": []
 				},
@@ -152,17 +180,23 @@
 					"name": "delete consumer",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImV4cCI6MTY5MzUwNTk0OSwiaWF0IjoxNjkzNDk4NzQ5fQ.BWgcRyETAmP5NxA3MHNDO7NfI04u8So9B0JKFh72ysw",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"consumer_id\":1,\n    \"segment_name\":\"discount\"\n}",
+							"raw": "{\n    \"consumer_id\":3,\n    \"segments\":\n    [\n        {\"segment_name\":\"discount\"}\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/consumers/delete"
+						"url": "localhost:8089/api/v1/consumers/delete"
 					},
 					"response": []
 				}
@@ -188,16 +222,28 @@
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/operations/"
+						"url": "localhost:8089/api/v1/operations/"
 					},
 					"response": []
 				},
 				{
 					"name": "get csv",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "localhost:8081/api/v1/operations/file"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"consumer_id\":1,\n    \"start_at\": \"2023-06-17T14:43:11Z\",\n    \"end_at\": \"2023-10-20T14:43:11Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8089/api/v1/operations/file"
 					},
 					"response": []
 				}
@@ -209,6 +255,12 @@
 				{
 					"name": "create segment",
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": ""
+							}
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -220,7 +272,7 @@
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/segments/create"
+						"url": "localhost:8089/api/v1/segments/create"
 					},
 					"response": []
 				},
@@ -238,7 +290,7 @@
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/segments/update"
+						"url": "localhost:8089/api/v1/segments/update"
 					},
 					"response": []
 				},
@@ -256,7 +308,7 @@
 								}
 							}
 						},
-						"url": "localhost:8081/api/v1/segments/delete"
+						"url": "localhost:8089/api/v1/segments/delete"
 					},
 					"response": []
 				}
