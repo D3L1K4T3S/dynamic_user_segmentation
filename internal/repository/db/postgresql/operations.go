@@ -49,7 +49,7 @@ func (or *OperationsRepository) AddOperation(ctx context.Context, consumerId int
 		err = e.WrapIfErr("Postgresql operations: ", err)
 	}()
 
-	query := "INSERT INTO operations VALUES ($1,$2,$3,$4) RETURNING id"
+	query := "INSERT INTO operations (consumer_id, segment_id, action_id) VALUES ($1,$2,$3) RETURNING id"
 
 	var id int
 	err = or.Pool.QueryRow(ctx, query, consumerId, segmentId, actionId).Scan(&id)

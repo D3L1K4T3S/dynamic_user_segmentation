@@ -22,8 +22,7 @@ func NewUsersRepository(pg *postgresql.PostgreSQL) *UsersRepository {
 func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (int, error) {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("problem in create user: ", err)
-
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
@@ -37,7 +36,7 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (i
 				return 0, respository_errors.ErrAlreadyExists
 			}
 		}
-		return 0, e.Wrap("can't do a query: ", err)
+		return 0, e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 
 	return id, nil
@@ -45,7 +44,7 @@ func (ur *UsersRepository) CreateUser(ctx context.Context, user entity.Users) (i
 func (ur *UsersRepository) DeleteUser(ctx context.Context, user entity.Users) error {
 	var err error
 	defer func() {
-
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "DELETE FROM users WHERE username = $1 and password = $2"
@@ -55,35 +54,15 @@ func (ur *UsersRepository) DeleteUser(ctx context.Context, user entity.Users) er
 		if errors.Is(err, pgx.ErrNoRows) {
 			return respository_errors.ErrNotFound
 		}
-		return e.Wrap("can't do a query: ", err)
+		return e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 	return nil
 
 }
-func (ur *UsersRepository) GetUserByID(ctx context.Context, id int) (entity.Users, error) {
-	var err error
-	defer func() {
-		err = e.WrapIfErr("problem in get user by id: ", err)
-	}()
-
-	query := "SELECT username, password FROM users WHERE id = $1"
-
-	var user entity.Users
-	user.Id = id
-	err = ur.Pool.QueryRow(ctx, query, id).Scan(&user.Username, &user.Password)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return entity.Users{}, respository_errors.ErrNotFound
-		}
-		return entity.Users{}, err
-	}
-
-	return user, nil
-}
 func (ur *UsersRepository) GetUserByUsername(ctx context.Context, username string) (entity.Users, error) {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("problem in get user by id: ", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "SELECT id, password FROM users WHERE username = $1"
@@ -95,27 +74,8 @@ func (ur *UsersRepository) GetUserByUsername(ctx context.Context, username strin
 		if errors.Is(err, pgx.ErrNoRows) {
 			return entity.Users{}, respository_errors.ErrNotFound
 		}
-		return entity.Users{}, err
+		return entity.Users{}, e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 
 	return user, nil
-}
-func (ur *UsersRepository) GetIdByUsername(ctx context.Context, username string) (int, error) {
-	var err error
-	defer func() {
-		err = e.WrapIfErr("problem in get user by id: ", err)
-	}()
-
-	query := "SELECT id FROM users WHERE username = $1"
-
-	var id int
-	err = ur.Pool.QueryRow(ctx, query, username).Scan(&id)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return 0, respository_errors.ErrNotFound
-		}
-		return 0, err
-	}
-
-	return id, nil
 }

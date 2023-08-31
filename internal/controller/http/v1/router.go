@@ -1,6 +1,7 @@
 package v1
 
 import (
+	_ "dynamic-user-segmentation/docs"
 	"dynamic-user-segmentation/internal/service"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,8 +19,9 @@ func NewRouter(handler *echo.Echo, services *service.Services) {
 	auth := handler.Group("/auth")
 	newAuthRoutes(auth, services.Auth)
 
-	authMiddleware := &AuthMiddleware{services.Auth}
-	v1 := handler.Group("/api/v1", authMiddleware.CheckUser)
+	//authMiddleware := &AuthMiddleware{services.Auth}
+	//v1 := handler.Group("/api/v1", authMiddleware.CheckUser)
+	v1 := handler.Group("/api/v1")
 	newActionsRoutes(v1.Group("/actions"), services.Actions)
 	newConsumersRoutes(v1.Group("/consumers"), services.Consumers)
 	newOperationsRoutes(v1.Group("/operations"), services.Operations)

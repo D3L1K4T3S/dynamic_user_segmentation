@@ -79,21 +79,7 @@ func (csr *ConsumersSegmentsRepository) UpdateSegmentTTL(ctx context.Context, co
 	}
 	return nil
 }
-func (csr *ConsumersSegmentsRepository) GetSegmentIdById(ctx context.Context, id int) (int, error) {
-	var err error
-	defer func() {
-		err = e.WrapIfErr("Repository consumer segments: ", err)
-	}()
 
-	query := "SELECT segment_id FROM consumers_segments WHERE id = $1"
-
-	var segmentId int
-	err = csr.Pool.QueryRow(ctx, query, id).Scan(&segmentId)
-	if err != nil {
-		return 0, respository_errors.ErrNotFound
-	}
-	return id, nil
-}
 func (csr *ConsumersSegmentsRepository) DeleteExpiredTTL(ctx context.Context, consumerId int) error {
 	var err error
 	defer func() {

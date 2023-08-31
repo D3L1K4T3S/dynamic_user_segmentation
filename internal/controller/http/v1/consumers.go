@@ -162,7 +162,7 @@ func (cr *consumersRoutes) update(ctx echo.Context) error {
 // @Security JWT
 // @Router /api/v1/consumers/delete [delete]
 func (cr *consumersRoutes) delete(ctx echo.Context) error {
-	var input dto.ConsumerRequest
+	var input dto.ConsumerRequestDelete
 
 	if err := ctx.Bind(&input); err != nil {
 		ErrResponse(ctx, http.StatusBadRequest, ErrInvalidRequest.Error())

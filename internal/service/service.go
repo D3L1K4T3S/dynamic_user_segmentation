@@ -11,8 +11,6 @@ import (
 type Actions interface {
 	CreateAction(ctx context.Context, action dto.ActionsRequest) (int, error)
 	DeleteAction(ctx context.Context, action dto.ActionsRequest) error
-	//GetActionById(ctx context.Context, id int) (dto.ActionsResponse, error)
-	//GetIdByAction(ctx context.Context, action dto.ActionsRequest) (int, error)
 }
 
 type Auth interface {
@@ -25,7 +23,7 @@ type Auth interface {
 type Consumers interface {
 	CreateConsumer(ctx context.Context, consumer dto.ConsumerRequest) ([]int, error)
 	AddSegmentsToConsumer(ctx context.Context, consumer dto.ConsumerRequest) ([]int, error)
-	DeleteSegmentsFromConsumer(ctx context.Context, consumer dto.ConsumerRequest) error
+	DeleteSegmentsFromConsumer(ctx context.Context, consumer dto.ConsumerRequestDelete) error
 	UpdateSegmentsTTL(ctx context.Context, consumer dto.ConsumerRequest) error
 	GetConsumerSegments(ctx context.Context, consumer dto.ConsumerId) (dto.ConsumerResponse, error)
 }
@@ -70,8 +68,14 @@ func NewServices(servicesDependencies ServicesDependencies) *Services {
 		Consumers: NewConsumersService(
 			servicesDependencies.Repository.Consumers,
 			servicesDependencies.Repository.Segments,
-			servicesDependencies.Repository.ConsumersSegments),
-		Operations: NewOperationsService(servicesDependencies.Repository.Operations),
+			servicesDependencies.Repository.ConsumersSegments,
+			servicesDependencies.Repository.Operations,
+			servicesDependencies.Repository.Actions),
+		Operations: NewOperationsService(
+			servicesDependencies.Repository.Operations,
+			servicesDependencies.Repository.ConsumersSegments,
+			servicesDependencies.Repository.Segments,
+			servicesDependencies.Repository.Actions),
 		Segments: NewSegmentsService(
 			servicesDependencies.Repository.Segments),
 	}

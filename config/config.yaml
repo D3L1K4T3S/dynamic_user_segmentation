@@ -5,7 +5,7 @@ app:
 
 http:
   host: localhost
-  port: 8080
+  port: 8081
 
 log:
   level: 'debug'
@@ -16,11 +16,11 @@ storage:
   port: 5432
   user: postgres
   password: BenQuB43
-  database: postgres1
+  database: postgres
 
 jwt:
-  signKey: 'key'
+  signKey: '7enZBcDhisUZRdx5UjxNVmSdXwPD_vGRow3s7xv1elU='
   token_ttl: 120m
 
 hash:
-  salt: 'salt'
+  salt: 'XvCwSGU/hvj7I5UO2oplzg=='

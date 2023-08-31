@@ -17,9 +17,12 @@ type OperationsService struct {
 	actions          repository.Actions
 }
 
-func NewOperationsService(operations repository.Operations) *OperationsService {
+func NewOperationsService(operations repository.Operations, consumerSegments repository.ConsumersSegments, segments repository.Segments, actions repository.Actions) *OperationsService {
 	return &OperationsService{
-		operations: operations,
+		operations:       operations,
+		consumerSegments: consumerSegments,
+		segments:         segments,
+		actions:          actions,
 	}
 }
 

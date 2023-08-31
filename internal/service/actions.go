@@ -20,18 +20,3 @@ func (as *ActionsService) CreateAction(ctx context.Context, action dto.ActionsRe
 func (as *ActionsService) DeleteAction(ctx context.Context, action dto.ActionsRequest) error {
 	return as.actions.DeleteAction(ctx, action.Name)
 }
-
-//func (as *ActionsService) GetActionById(ctx context.Context, id int) (dto.ActionsResponse, error) {
-//	var actions dto.ActionsResponse
-//	res, err := as.actions.GetActionById(ctx, id)
-//	if err != nil {
-//		return dto.ActionsResponse{}, e.Wrap("can't do service: ", err)
-//	}
-//	actions.Id = res.Id
-//	actions.Name = res.Name
-//
-//	return actions, nil
-//}
-//func (as *ActionsService) GetIdByAction(ctx context.Context, action dto.ActionsRequest) (int, error) {
-//	return as.actions.GetIdByAction(ctx, action.Name)
-//}

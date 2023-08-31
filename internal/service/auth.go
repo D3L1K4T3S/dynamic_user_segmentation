@@ -84,7 +84,7 @@ func (as *AuthService) GenerateToken(ctx context.Context, authUser dto.AuthUser)
 		return "", e.Wrap("can't get user: ", err)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, &Token{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Token{
 		UserId: user.Id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(as.tokenTTL).Unix(),
@@ -101,7 +101,7 @@ func (as *AuthService) GenerateToken(ctx context.Context, authUser dto.AuthUser)
 func (as *AuthService) ParseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &Token{},
 		func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, ErrUnexpectedSigningMethod
 			}
 			return []byte(as.signKey), nil

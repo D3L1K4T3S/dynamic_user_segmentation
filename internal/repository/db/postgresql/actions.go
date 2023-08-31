@@ -60,6 +60,7 @@ func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action string) (
 	var err error
 	defer func() {
 		err = e.WrapIfErr("problem in GetIdByAction: ", err)
+
 	}()
 
 	query := "SELECT id FROM actions WHERE name = $1"
@@ -67,30 +68,8 @@ func (ar *ActionsRepository) GetIdByAction(ctx context.Context, action string) (
 	var id int
 	err = ar.Pool.QueryRow(ctx, query, action).Scan(&id)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return 0, respository_errors.ErrNotFound
-		}
 		return 0, err
 	}
 
 	return id, nil
 }
-
-//func (ar *ActionsRepository) GetActionById(ctx context.Context, actionId int) (string, error) {
-//	var err error
-//	defer func() {
-//		err = e.WrapIfErr("problem with get action by id: ", err)
-//	}()
-//
-//	query := "SELECT name FROM actions WHERE id = $1"
-//
-//	var action string
-//	err = ar.Pool.QueryRow(ctx, query, actionId).Scan(&action)
-//	if err != nil {
-//		if errors.Is(err, pgx.ErrNoRows) {
-//			return "", repository.ErrNotFound
-//		}
-//		return "", err
-//	}
-//	return action, nil
-//}

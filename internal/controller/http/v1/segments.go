@@ -5,6 +5,7 @@ import (
 	"dynamic-user-segmentation/internal/service/dto"
 	"errors"
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 )
 
@@ -74,6 +75,7 @@ func (sr *segmentsRoutes) update(ctx echo.Context) error {
 		return err
 	}
 
+	log.Printf(input.Name)
 	err := sr.segmentService.UpdateSegment(ctx.Request().Context(), input)
 
 	if err != nil {

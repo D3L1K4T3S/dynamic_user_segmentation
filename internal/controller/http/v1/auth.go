@@ -27,8 +27,8 @@ func newAuthRoutes(group *echo.Group, authService service.Auth) {
 // @Produce json
 // @Param input body dto.AuthUser true "input"
 // @Success 200
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 // @Security JWT
 // @Router /auth/sign-in [post]
 func (ar *authRoutes) signIn(ctx echo.Context) error {
@@ -61,8 +61,8 @@ func (ar *authRoutes) signIn(ctx echo.Context) error {
 // @Produce json
 // @Param input body dto.AuthUser true "input"
 // @Success 201
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 // @Security JWT
 // @Router /auth/sign-up [post]
 func (ar *authRoutes) signUp(ctx echo.Context) error {

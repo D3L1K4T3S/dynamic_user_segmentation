@@ -2,30 +2,27 @@ version: "3.8"
 
 services:
 
-  postgresql:
+  postgres:
+    container_name: postgres
     image: postgres
-    container_name: postgresql
     volumes:
       - pg-data:/var/lib/postgresql/data
     env_file:
       - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: unless-stopped
 
-  application:
-    container_name: applicaiton
+  dynamic-user-segmentation:
+    container_name: dynamic-user-segmentation
     build: .
-    volumes:
-      - ./logs:/logs
-      - ./secrets:/secrets
     env_file:
       - .env
     ports:
-      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "8081:8080"
     depends_on:
-      - postgresql
+      - postgres
     restart: unless-stopped
-
-volumes:
-  pg-data:

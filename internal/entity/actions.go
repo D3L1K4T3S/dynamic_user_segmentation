@@ -8,4 +8,6 @@ type Actions struct {
 const (
 	ActionTypeCreate = "create"
 	ActionTypeAdd    = "add"
+	ActionTypeDelete = "delete"
+	ActionTypeUpdate = "update"
 )

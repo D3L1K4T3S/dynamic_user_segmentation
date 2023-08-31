@@ -22,7 +22,7 @@ func NewSegmentsRepository(pg *postgresql.PostgreSQL) *SegmentsRepository {
 func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string, percent float64) (int, error) {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("can't create a new segment", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "INSERT INTO segments (name, percent) VALUES ($1, $2) RETURNING id"
@@ -36,7 +36,7 @@ func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string,
 				return 0, respository_errors.ErrAlreadyExists
 			}
 		}
-		return 0, e.Wrap("can't do a query: ", err)
+		return 0, e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 
 	return id, nil
@@ -44,7 +44,7 @@ func (sr *SegmentsRepository) CreateSegment(ctx context.Context, segment string,
 func (sr *SegmentsRepository) DeleteSegment(ctx context.Context, id int) error {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("can't delete from segments: ", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "DELETE FROM segments WHERE id = $1"
@@ -53,49 +53,30 @@ func (sr *SegmentsRepository) DeleteSegment(ctx context.Context, id int) error {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return respository_errors.ErrNotFound
 		}
-		return e.Wrap("can't do a query: ", err)
+		return e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 	return nil
 }
 func (sr *SegmentsRepository) UpdateSegment(ctx context.Context, id int, percent float64) error {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("can't update segment: ", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "UPDATE segments SET percent = $1 WHERE id = $2"
 	_, err = sr.Pool.Exec(ctx, query, percent, id)
 	if err != nil {
-		return e.Wrap("can't do a query: ", err)
+		return e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 	return nil
-}
-func (sr *SegmentsRepository) GetSegmentById(ctx context.Context, id int) (string, error) {
-	var err error
-	defer func() {
-		err = e.WrapIfErr("can't get segment by id: ", err)
-	}()
-
-	query := "SELECT name FROM segments WHERE id = $1"
-
-	var name string
-	err = sr.Pool.QueryRow(ctx, query, id).Scan(&name)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return "", respository_errors.ErrNotFound
-		}
-		return "", e.Wrap("can't do query: ", err)
-	}
-
-	return name, nil
 }
 func (sr *SegmentsRepository) GetIdBySegment(ctx context.Context, segment string) (int, error) {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("can't get id by name segment: ", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
-	query := "SELECT name FROM segments WHERE id = $1"
+	query := "SELECT id FROM segments WHERE name = $1"
 
 	var id int
 	err = sr.Pool.QueryRow(ctx, query, segment).Scan(&id)
@@ -103,7 +84,7 @@ func (sr *SegmentsRepository) GetIdBySegment(ctx context.Context, segment string
 		if errors.Is(err, pgx.ErrNoRows) {
 			return 0, respository_errors.ErrNotFound
 		}
-		return 0, e.Wrap("can't do a query: ", err)
+		return 0, e.Wrap(respository_errors.CannotDoQueryMsg, err)
 	}
 
 	return id, nil
@@ -111,7 +92,7 @@ func (sr *SegmentsRepository) GetIdBySegment(ctx context.Context, segment string
 func (sr *SegmentsRepository) GetAllSegments(ctx context.Context) ([]entity.Segments, error) {
 	var err error
 	defer func() {
-		err = e.WrapIfErr("Repository postgres: ", err)
+		err = e.WrapIfErr(respository_errors.RepositoryPostgresMsg, err)
 	}()
 
 	query := "SELECT * FROM segments"
@@ -128,7 +109,7 @@ func (sr *SegmentsRepository) GetAllSegments(ctx context.Context) ([]entity.Segm
 		var segment entity.Segments
 		err = rows.Scan(&segment.Id, &segment.Name, &segment.Percent)
 		if err != nil {
-			return nil, e.Wrap("can't scan from rows: ", err)
+			return nil, e.Wrap(respository_errors.CannotDoQueryMsg, err)
 		}
 		segments = append(segments, segment)
 	}

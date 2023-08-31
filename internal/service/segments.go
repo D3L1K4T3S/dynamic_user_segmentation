@@ -24,7 +24,6 @@ func (ss *SegmentsService) DeleteSegment(ctx context.Context, segment dto.Segmen
 	defer func() {
 		err = e.WrapIfErr("Segments service: ", err)
 	}()
-
 	id, err := ss.segments.GetIdBySegment(ctx, segment.Name)
 	if err != nil {
 		return respository_errors.ErrNotFound
