@@ -40,7 +40,7 @@ func TestActionsRepository_CreateAction(t *testing.T) {
 			},
 			inputBody: `{"name":"create"}`,
 			mockBehavior: func(m *smocks.MockActions, args args) {
-				m.EXPECT().CreateAction(args.ctx, args.input)
+				m.EXPECT().CreateAction(args.ctx, args.input).Return(1, nil)
 			},
 			wantStatusCode:  201,
 			wantRequestBody: `{"id":1}` + "\n",
@@ -62,7 +62,7 @@ func TestActionsRepository_CreateAction(t *testing.T) {
 			newActionsRoutes(g, services.Actions)
 
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodPost, "/api/v1/actions", bytes.NewBufferString(tc.inputBody))
+			r := httptest.NewRequest(http.MethodPost, "/api/v1/actions/create", bytes.NewBufferString(tc.inputBody))
 			r.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 			e.ServeHTTP(w, r)

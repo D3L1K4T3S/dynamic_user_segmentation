@@ -194,13 +194,13 @@ func TestSegmentsRepository_UpdateSegment(t *testing.T) {
 		{
 			name: "Segment already exists",
 			args: args{
-				ctx: context.Background(),
-				id:  1,
-				percent: 10
+				ctx:     context.Background(),
+				id:      1,
+				percent: 10,
 			},
 			mockBehavior: func(m pgxmock.PgxPoolIface, args args) {
 				m.ExpectQuery("UPDATE segments SET percent WHERE id").
-					WithArgs(args.percent, args.id).
+					WithArgs(args.percent, args.id).WillReturnError(errors.New("already exists"))
 			},
 			want:    1,
 			wantErr: true,

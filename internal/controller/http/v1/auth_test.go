@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-func TestAuthRoutes_SignUp(t *testing.T) {
+func TestAuthRoutes_SignIn(t *testing.T) {
 	type args struct {
 		ctx   context.Context
 		input dto.AuthUser
@@ -41,10 +41,10 @@ func TestAuthRoutes_SignUp(t *testing.T) {
 			},
 			inputBody: `{"username":"test_name","password":"test_password"}`,
 			mockBehavior: func(m *smocks.MockAuth, args args) {
-				m.EXPECT().CreateUser(args.ctx, args.input).Return(1, nil)
+				m.EXPECT().GenerateToken(args.ctx, args.input).Return("token", nil)
 			},
-			wantStatusCode:  201,
-			wantRequestBody: `{"id":1}` + "\n",
+			wantStatusCode:  200,
+			wantRequestBody: `{"token":"token"}` + "\n",
 		},
 	}
 
@@ -62,7 +62,7 @@ func TestAuthRoutes_SignUp(t *testing.T) {
 			newAuthRoutes(g, services.Auth)
 
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodPost, "/auth/sigh-up", bytes.NewBufferString(tc.inputBody))
+			r := httptest.NewRequest(http.MethodPost, "/auth/sign-in", bytes.NewBufferString(tc.inputBody))
 			r.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 			e.ServeHTTP(w, r)
